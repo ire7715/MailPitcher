@@ -91,4 +91,4 @@ class Pitcher(object):
 
     smtp = smtplib.SMTP(self.smtpInfo[self.CONF_SMTP_HOST], \
       self.smtpInfo[self.CONF_SMTP_PORT])
-    smtp.sendmail(self.mailInfo["From"], self.mailInfo["To"], mailInfo.as_string())
+    smtp.sendmail(mailInfo["From"], mailInfo["To"], mailInfo.as_string())
