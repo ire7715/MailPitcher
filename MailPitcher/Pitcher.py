@@ -82,7 +82,7 @@ class Pitcher(object):
           mime = MIMEImage(filePointer.read(), _subtype=subtype)
       else:
         with open(filePath, "rb") as filePointer:
-          mime = MIMEBase(*getMIMEType(filePath))
+          mime = MIMEBase(primarytype, subtype)
           mime.set_payload(filePointer.read())
           encoders.encode_base64(attach)
       mime.add_header("Content-Disposition", "attachment", \
