@@ -1,7 +1,10 @@
-import os, ConfigParser, mimetypes
-import email
+import ConfigParser, mimetypes
+from email import encoders
 from email.mime.multipart import MIMEMultipart
+from email.mime.audio import MIMEAudio
 from email.mime.base import MIMEBase
+from email.mime.image import MIMEImage
+from email.mime.text import MIMEText
 import smtplib
 
 class Pitcher(object):
@@ -18,7 +21,7 @@ class Pitcher(object):
   config = None
 
   @staticmethod
-  def hasOptions(config, section, *optnios):
+  def hasOptions(config, section, *options):
     for option in options:
       if not config.has_option(section, option):
         return False
@@ -55,13 +58,30 @@ class Pitcher(object):
     content = self.config.get(sectionName, self.CONF_MAIL_CONTENT)
     mailInfo.attach(MIMEText(content, "html", "utf-8"))
 
-    files = filter(lambda option: self.CONF_MAIL_FILES in option, self.config.options)
+    files = filter(lambda option: self.CONF_MAIL_FILES in option, \
+      self.config.options(sectionName))
     for file in files:
       filePath = self.config.get(sectionName, file)
-      with open(filePath, "rb") as filePointer:
-        mime = MIMEBase(*getMIMEType(filePath))
-        mime.set_payload(filePointer.read())
-        encoders.encode_base64(attach)
+      MIMEType, encoding = mimetypes.guess_type(filePath)
+      if MIMEType is not None:
+        primarytype, subtype = MIMEType.split("/")
+      else:
+        primarytype, subtype = ("text", "plain")
+
+      if primarytype == "text":
+        with open(filePath, "r") as filePointer:
+          mime = MIMEText(filePointer.read(), _subtype=subtype)
+      elif primarytype == "image":
+        with open(filePath, "rb") as filePointer:
+          mime = MIMEImage(filePointer.read(), _subtype=subtype)
+      elif primarytype == "audio":
+        with open(filePath, "rb") as filePointer:
+          mime = MIMEImage(filePointer.read(), _subtype=subtype)
+      else:
+        with open(filePath, "rb") as filePointer:
+          mime = MIMEBase(*getMIMEType(filePath))
+          mime.set_payload(filePointer.read())
+          encoders.encode_base64(attach)
       mime.add_header("Content-Disposition", "attachment", filename=filePath)
       mailInfo.attach(mime)
 
