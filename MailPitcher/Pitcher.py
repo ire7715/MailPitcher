@@ -41,10 +41,8 @@ class Pitcher(object):
       raise KeyError("There should be SMTP connection Information in config file.")
 
   def pitch(self, sectionName):
-    def getExt(fileName):
-      return "." + fileName.split(".")[-1]
-    def getMIMEType(fileName):
-      return mimetypes.read_mime_types(fileName)[getExt(fileName)].split("/")
+    def getFileName(filePath):
+      return filePath.split("/")[-1]
 
     if not Pitcher.hasOptions(self.config, sectionName, \
     self.CONF_MAIL_FROM, self.CONF_MAIL_TO):
@@ -87,7 +85,8 @@ class Pitcher(object):
           mime = MIMEBase(*getMIMEType(filePath))
           mime.set_payload(filePointer.read())
           encoders.encode_base64(attach)
-      mime.add_header("Content-Disposition", "attachment", filename=filePath)
+      mime.add_header("Content-Disposition", "attachment", \
+        filename=getFileName(filePath))
       mailInfo.attach(mime)
 
     smtp = smtplib.SMTP(self.smtpInfo[self.CONF_SMTP_HOST], \
