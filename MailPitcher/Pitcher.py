@@ -1,10 +1,11 @@
 import ConfigParser, mimetypes
 from email import encoders
-from email.mime.multipart import MIMEMultipart
 from email.mime.audio import MIMEAudio
 from email.mime.base import MIMEBase
 from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.utils import COMMASPACE
 import smtplib
 
 class Pitcher(object):
@@ -41,6 +42,9 @@ class Pitcher(object):
   def pitch(self, sectionName):
     def getFileName(filePath):
       return filePath.split("/")[-1]
+    def mailToPlural(rawToList):
+      toList = map(str.strip, rawToList.split(","))
+      return COMMASPACE.join(toList)
 
     if not Pitcher.hasOptions(self.config, sectionName, \
     self.CONF_MAIL_FROM, self.CONF_MAIL_TO):
@@ -50,7 +54,7 @@ class Pitcher(object):
 
     mailInfo = MIMEMultipart()
     mailInfo["From"] = self.config.get(sectionName, self.CONF_MAIL_FROM)
-    mailInfo["To"] = self.config.get(sectionName, self.CONF_MAIL_TO)
+    mailInfo["To"] = mailToPlural(self.config.get(sectionName, self.CONF_MAIL_TO))
     mailInfo["Subject"] = self.config.get(sectionName, self.CONF_MAIL_SUBJECT)
     if self.config.has_option(sectionName, self.CONF_MAIL_HTML_CONTENT):
       content = self.config.get(sectionName, self.CONF_MAIL_HTML_CONTENT)
