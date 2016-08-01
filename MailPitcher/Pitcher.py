@@ -14,7 +14,8 @@ class Pitcher(object):
   CONF_MAIL_FROM = "from"
   CONF_MAIL_TO = "to"
   CONF_MAIL_SUBJECT = "subject"
-  CONF_MAIL_CONTENT = "content"
+  CONF_MAIL_HTML_CONTENT = "htmlContent"
+  CONF_MAIL_PLAIN_CONTENT = "plainContent"
   CONF_MAIL_FILES = "files"
 
   smtpInfo = None
@@ -55,8 +56,12 @@ class Pitcher(object):
     mailInfo["From"] = self.config.get(sectionName, self.CONF_MAIL_FROM)
     mailInfo["To"] = self.config.get(sectionName, self.CONF_MAIL_TO)
     mailInfo["Subject"] = self.config.get(sectionName, self.CONF_MAIL_SUBJECT)
-    content = self.config.get(sectionName, self.CONF_MAIL_CONTENT)
-    mailInfo.attach(MIMEText(content, "html", "utf-8"))
+    if self.config.has_option(sectionName, self.CONF_MAIL_HTML_CONTENT):
+      content = self.config.get(sectionName, self.CONF_MAIL_HTML_CONTENT)
+      mailInfo.attach(MIMEText(content, "html", "utf-8"))
+    elif self.config.has_option(sectionName, self.CONF_MAIL_PLAIN_CONTENT):
+      content = self.config.get(sectionName, self.CONF_MAIL_PLAIN_CONTENT)
+      mailInfo.attach(MIMEText(content, "plain", "utf-8"))
 
     files = filter(lambda option: self.CONF_MAIL_FILES in option, \
       self.config.options(sectionName))
