@@ -32,8 +32,6 @@ class Pitcher(object):
     self.config = ConfigParser.ConfigParser()
     self.config.read(configPath)
 
-    # if self.config.has_option(self.CONF_SMTP_SECTION, self.CONF_SMTP_HOST) \
-    # and self.config.has_option(self.CONF_SMTP_SECTION, self.CONF_SMTP_PORT):
     if Pitcher.hasOptions(self.config, self.CONF_SMTP_SECTION, \
     self.CONF_SMTP_HOST, self.CONF_SMTP_PORT):
       self.smtpInfo = dict(self.config.items(self.CONF_SMTP_SECTION))
