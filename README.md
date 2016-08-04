@@ -6,6 +6,7 @@ Define your own `pitcher.cfg`, need not to be in a specific directory or name. Y
 The `pitcher.cfg` will look like the following:
 ```
 [Shot_1]
+enabled = True
 from = dummy@sunshire.net
 to = ire7715@sunshire.net, ire771501@sunshire.net
 subject = MailPitcher Test
@@ -23,6 +24,7 @@ port = 25
 The section "SMTP" is necessary, which addresses the SMTP server and port.    
 For other sections, each one documents a pitching(mailing) task.    
 You are allow to specify the sender(`from`)/receiver(`to`), aware that `to` field is allow multi-value, so you can mail multiple people.    
+`enabled` field is optional, default True. Assigning values other than "True" would skip this section.
 `subject` field is plain text.    
 `htmlContent` and `plainContent` are mutual exculsive, but if you specified both, htmlContent has a higher priority.    
 And the last but not least, `files*`, you are allow to specify variadic quatity of files, as long as they got the correct prefix(`files`).
