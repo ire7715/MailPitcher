@@ -48,12 +48,12 @@ class Pitcher(object):
       toList = map(str.strip, rawToList.split(","))
       return COMMASPACE.join(toList)
 
-    if self.config.has_section(sectionName):
+    if not self.config.has_section(sectionName):
       raise NoSectionError("Cannot find a section named \"%s\"" % sectionName)
 
-    if not self.config.has_option(sectionName, self.CONF_MAIL_ENABLED) or \
-    not self.config.getBoolean(sectionName, self.CONF_MAIL_ENABLED):
-      # section disabled
+    if self.config.has_option(sectionName, self.CONF_MAIL_ENABLED) and \
+    not self.config.get(sectionName, self.CONF_MAIL_ENABLED) == "True":
+      print("Section[%s] is disabled" % sectionName)
       return
 
     if not Pitcher.hasOptions(self.config, sectionName, \
