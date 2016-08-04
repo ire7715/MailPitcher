@@ -1,4 +1,5 @@
 [Shot_1]
+enabled = False
 from = dummy@sunshire.net
 to = ire7715@sunshire.net, ire771501@sunshire.net
 subject = MailPitcher Test
