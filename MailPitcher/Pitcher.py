@@ -1,4 +1,5 @@
 import ConfigParser, mimetypes
+from ConfigParser import NoSectionError
 from email import encoders
 from email.mime.audio import MIMEAudio
 from email.mime.base import MIMEBase
@@ -12,6 +13,7 @@ class Pitcher(object):
   CONF_SMTP_SECTION = "SMTP"
   CONF_SMTP_HOST = "host"
   CONF_SMTP_PORT = "port"
+  CONF_MAIL_ENABLED = "enabled"
   CONF_MAIL_FROM = "from"
   CONF_MAIL_TO = "to"
   CONF_MAIL_SUBJECT = "subject"
@@ -45,6 +47,14 @@ class Pitcher(object):
     def mailToPlural(rawToList):
       toList = map(str.strip, rawToList.split(","))
       return COMMASPACE.join(toList)
+
+    if self.config.has_section(sectionName):
+      raise NoSectionError("Cannot find a section named \"%s\"" % sectionName)
+
+    if not self.config.has_option(sectionName, self.CONF_MAIL_ENABLED) or \
+    not self.config.getBoolean(sectionName, self.CONF_MAIL_ENABLED):
+      # section disabled
+      return
 
     if not Pitcher.hasOptions(self.config, sectionName, \
     self.CONF_MAIL_FROM, self.CONF_MAIL_TO):
