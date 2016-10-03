@@ -13,6 +13,9 @@ class Pitcher(object):
   CONF_SMTP_SECTION = "SMTP"
   CONF_SMTP_HOST = "host"
   CONF_SMTP_PORT = "port"
+  CONF_SMTP_USER = "username"
+  CONF_SMTP_PASS = "password"
+
   CONF_MAIL_ENABLED = "enabled"
   CONF_MAIL_FROM = "from"
   CONF_MAIL_TO = "to"
@@ -103,4 +106,7 @@ class Pitcher(object):
 
     smtp = smtplib.SMTP(self.smtpInfo[self.CONF_SMTP_HOST], \
       self.smtpInfo[self.CONF_SMTP_PORT])
+    if self.CONF_SMTP_USER in self.smtpInfo and self.CONF_SMTP_PASS in self.smtpInfo:
+      smtp.login(self.smtpInfo[self.CONF_SMTP_USER], \
+        self.smtpInfo[self.CONF_SMTP_PASS])
     smtp.sendmail(mailInfo["From"], mailInfo["To"], mailInfo.as_string())
