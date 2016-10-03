@@ -107,6 +107,7 @@ class Pitcher(object):
     smtp = smtplib.SMTP(self.smtpInfo[self.CONF_SMTP_HOST], \
       self.smtpInfo[self.CONF_SMTP_PORT])
     if self.CONF_SMTP_USER in self.smtpInfo and self.CONF_SMTP_PASS in self.smtpInfo:
+      smtp.starttls()
       smtp.login(self.smtpInfo[self.CONF_SMTP_USER], \
         self.smtpInfo[self.CONF_SMTP_PASS])
     smtp.sendmail(mailInfo["From"], mailInfo["To"], mailInfo.as_string())
