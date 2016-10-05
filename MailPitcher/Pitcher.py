@@ -97,7 +97,7 @@ class Pitcher(object):
         with open(filePath, "rb") as filePointer:
           mime = MIMEBase(primarytype, subtype)
           mime.set_payload(filePointer.read())
-          encoders.encode_base64(attach)
+          encoders.encode_base64(mime)
       mime.add_header("Content-Disposition", "attachment", \
         filename=os.path.basename(filePath))
       mailInfo.attach(mime)
