@@ -1,4 +1,4 @@
-import ConfigParser, mimetypes
+import ConfigParser, os, mimetypes
 from ConfigParser import NoSectionError
 from email import encoders
 from email.mime.audio import MIMEAudio
@@ -45,8 +45,6 @@ class Pitcher(object):
       raise KeyError("There should be SMTP connection Information in config file.")
 
   def pitch(self, sectionName):
-    def getFileName(filePath):
-      return filePath.split("/")[-1]
     def mailToPlural(rawToList):
       toList = map(str.strip, rawToList.split(","))
       return COMMASPACE.join(toList)
@@ -101,7 +99,7 @@ class Pitcher(object):
           mime.set_payload(filePointer.read())
           encoders.encode_base64(attach)
       mime.add_header("Content-Disposition", "attachment", \
-        filename=getFileName(filePath))
+        filename=os.path.basename(filePath))
       mailInfo.attach(mime)
 
     smtp = smtplib.SMTP(self.smtpInfo[self.CONF_SMTP_HOST], \
